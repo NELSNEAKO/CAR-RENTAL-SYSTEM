@@ -1,0 +1,103 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.vehicle-management {
+    text-align: left;
+    margin-top: 100px; 
+}
+
+.add-vehicle-form {
+    text-align: left;
+    margin-top: 50px; 
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.2); /* transparent black */
+    padding: 10px 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 96%; /* extend across full screen */
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+}
+
+.brand-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: beige;
+}
+
+.brand-text .highlight {
+    color: red;
+}
+
+
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: red;
+}
+
+.hero {
+    background-image: url('car5.png');
+    background-size: cover;
+    background-position: 50% 10%;
+    height: 100vh; /* fills the full viewport height */
+    width: 100vw;  /* optional: ensures full width */
+    position: relative;
+    overflow: hidden;
+}
+
+.hero .login-btn, .hero .register-btn {
+    position: absolute;
+    left: 10%;
+    padding: 12px 30px;
+    background: #1abc9c;
+    color: white;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(27, 255, 209, 0.76);
+    transition: all 0.3s ease;
+}
+
+.hero .login-btn:hover, .hero .register-btn:hover {
+    background: #16a085;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4);
+    color: white;
+}
+
+.hero .login-btn {
+    top: 50%;
+}
+
+.hero .register-btn {
+    bottom: 30%;
+}

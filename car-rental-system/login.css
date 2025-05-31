@@ -1,0 +1,215 @@
+body {
+    background: url('car4.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dark overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.4); 
+    padding: 10px 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 96%; 
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+}
+
+.brand-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: beige;
+}
+
+.brand-text .highlight {
+    color: red;
+}
+
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: red;
+}
+
+/* Login Container Styles */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    min-height: 80vh;
+    padding: 150px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-logo {
+    color: #1abc9c;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 30px;
+    color: #1c1e21;
+}
+
+/* Input Styles */
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 16px;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+}
+
+.input-error {
+    border-color: #ff4444;
+    background-color: #fff8f8;
+}
+
+.error-box {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff8f8;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 14px;
+    text-align: left;
+    margin-top: 8px;
+}
+
+/* Button Styles */
+.login-btn {
+    background-color: #1abc9c;
+    color: white;
+    width: 100%;
+    padding: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #16a085;
+}
+
+.login-btn:active {
+    transform: translateY(1px);
+}
+
+/* Link Styles */
+.register-link {
+    display: block;
+    margin-top: 20px;
+    color: #1abc9c;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: #16a085;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 100px 20px;
+    }
+    
+    .login-card {
+        padding: 30px 20px;
+    }
+    
+    .navbar {
+        padding: 10px 15px;
+    }
+    
+    .nav-links a {
+        margin-left: 15px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-logo {
+        font-size: 30px;
+    }
+    
+    h2 {
+        font-size: 18px;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+}

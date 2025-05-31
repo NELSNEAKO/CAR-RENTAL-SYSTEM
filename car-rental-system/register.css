@@ -1,0 +1,177 @@
+body {
+    /* background: url('car4.jpg') no-repeat center center fixed; */
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Optional: dark overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent overlay */
+    z-index: -1;
+}
+
+
+/* FOR INDEX */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.4); 
+    padding: 10px 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 96%; 
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+}
+
+.brand-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: beige;
+}
+
+.brand-text .highlight {
+    color: red;
+}
+
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: red;
+}
+
+
+/* FOR REGISTER */
+.register-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    min-height: 100vh;
+    padding: 80px;
+}
+
+.register-card {
+    background: rgba(255, 255, 255, 0.8); /* semi-transparent white */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.register-logo {
+    color: #1abc9c;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #1c1e21;
+}
+
+input[type="fullname"],
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    margin: 0;
+}
+
+.terms-link {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.login-btn {
+    background-color: #1abc9c;
+    color: black;
+    width: 100%;
+    padding: 14px;
+    font-size: 17px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.login-btn:hover {
+    background-color: #1976D2;
+}
+
+.register-link {
+    display: block;
+    margin-top: 16px;
+    color:rgb(242, 24, 24);
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* Message Styles */
+.success-message,
+.error-message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+}
