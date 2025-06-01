@@ -164,52 +164,39 @@ $result = $conn->query($query);
             padding: 40px;
             color: #666;
         }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #555;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #000;
+            background-color: #f5f5f5;
+        }
+
+        .back-btn svg {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="brand">
-            <img src="carlogo2.png" alt="Car Logo" class="logo">
-            <span class="brand-text">QuadRide<span class="highlight">Rental</span></span>
-        </div>
 
-        <nav class="nav-links">
-            <a href="home.php">Home</a>
-            <a href="about.php">About Us</a>
-            <a href="carlist.php">Car list</a>
-            <a href="contact.php">Contact</a>
-            <a href="gallery.php">Gallery</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="logout.php">Log Out</a>
-            <?php else: ?>
-                <a href="log-in.php">Log In</a>
-            <?php endif; ?>
-        </nav>
-    </header>
 
     <div class="car-list-container">
-        <div class="search-section">
-            <form class="search-form" method="GET">
-                <select name="category" id="category">
-                    <option value="">All Categories</option>
-                    <?php
-                    $cat_query = "SELECT * FROM vehicle_categories ORDER BY name";
-                    $cat_result = $conn->query($cat_query);
-                    while ($category = $cat_result->fetch_assoc()) {
-                        $selected = (isset($_GET['category']) && $_GET['category'] == $category['id']) ? 'selected' : '';
-                        echo "<option value='{$category['id']}' {$selected}>{$category['name']}</option>";
-                    }
-                    ?>
-                </select>
-                <select name="status" id="status">
-                    <option value="">All Status</option>
-                    <option value="available" <?php echo (isset($_GET['status']) && $_GET['status'] == 'available') ? 'selected' : ''; ?>>Available</option>
-                    <option value="rented" <?php echo (isset($_GET['status']) && $_GET['status'] == 'rented') ? 'selected' : ''; ?>>Rented</option>
-                </select>
-                <input type="text" name="search" placeholder="Search by brand or model" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                <button type="submit" class="search-btn">Search</button>
-            </form>
-        </div>
+        <a href="home.php" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+            </svg>
+            Back to Home
+        </a>
 
         <div class="car-grid">
             <?php
