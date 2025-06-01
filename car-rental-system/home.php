@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'php/database.php';
 
 // Fetch all available vehicles with their categories
@@ -92,8 +93,13 @@ if ($result) {
         <nav class="nav-links">
             <a href="home.php">Home</a>
             <a href="carlist.php">Car list</a>
-            <a href="contact.php">Contact</a>
-            <a href="logout.php">Log Out</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="my_rentals.php">My Rentals</a>
+                <a href="logout.php">Log Out</a>
+            <?php else: ?>
+                <a href="login.php">Login</a>
+                <a href="register.php">Register</a>
+            <?php endif; ?>
         </nav>
     </header>
 
@@ -147,7 +153,7 @@ if ($result) {
                         </div>
                         <div class="car-actions">
                             <a href="book.php?id=<?php echo $vehicle['id']; ?>" class="book-btn">Book Now</a>
-                            <a href="details.php?id=<?php echo $vehicle['id']; ?>" class="details-btn">View Details</a>
+                            <!-- <a href="details.php?id=<?php echo $vehicle['id']; ?>" class="details-btn">View Details</a> -->
                         </div>
                     </div>
                 </div>

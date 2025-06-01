@@ -29,6 +29,7 @@ $result = $conn->query($query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Reservations - Admin Panel</title>
     <link rel="stylesheet" href="admin_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -242,26 +243,28 @@ $result = $conn->query($query);
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .status-pending {
-            background-color: #ffeeba;
-            color: #856404;
+        .status-badge i {
+            font-size: 14px;
         }
 
-        .status-confirmed {
+        .status-paid {
             background-color: #d4edda;
             color: #155724;
         }
 
-        .status-cancelled {
+        .status-refunded {
             background-color: #f8d7da;
             color: #721c24;
         }
 
-        .status-completed {
-            background-color: #cce5ff;
-            color: #004085;
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
         }
 
         .action-btn {
@@ -345,9 +348,121 @@ $result = $conn->query($query);
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
+        /* Add notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .payment-approved {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .payment-pending {
+            background-color: #ffc107;
+            color: #000000;
+        }
+
+        .payment-status-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-status-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .payment-status-date {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .approve-payment-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .approve-payment-btn:hover {
+            background-color: #218838;
+            transform: scale(1.1);
+        }
+
+        .approve-payment-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .approve-payment-btn i {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
+    <!-- Add notification div -->
+    <div id="notification" class="notification"></div>
+
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>QuadRide Admin</h2>
@@ -412,9 +527,38 @@ $result = $conn->query($query);
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="status-badge status-<?php echo strtolower($booking['payment_status'] ?? 'pending'); ?>">
-                                        <?php echo ucfirst($booking['payment_status'] ?? 'Pending'); ?>
-                                    </span>
+                                    <div class="payment-status-container">
+                                        <div class="payment-status-info">
+                                            <span class="status-badge status-<?php echo strtolower($booking['payment_status'] ?? 'pending'); ?>">
+                                                <?php if ($booking['payment_status'] == 'completed'): ?>
+                                                    <i class="fas fa-check-circle"></i> Payment Completed
+                                                <?php elseif ($booking['payment_status'] == 'refunded'): ?>
+                                                    <i class="fas fa-times-circle"></i> Payment Refunded
+                                                <?php else: ?>
+                                                    No Payment Status
+                                                <?php endif; ?>
+                                            </span>
+                                            <?php if ($booking['payment_status'] == 'completed'): ?>
+                                                <span class="payment-status-date">
+                                                    Paid on: <?php echo date('M d, Y', strtotime($booking['updated_at'] ?? $booking['created_at'])); ?>
+                                                </span>
+                                            <?php elseif ($booking['payment_status'] == 'refunded'): ?>
+                                                <span class="payment-status-date">
+                                                    Refunded on: <?php echo date('M d, Y', strtotime($booking['updated_at'] ?? $booking['created_at'])); ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php if (!in_array($booking['payment_status'], ['completed', 'refunded'])): ?>
+                                            <div class="payment-actions">
+                                                <button class="approve-payment-btn" onclick="approvePayment(<?php echo $booking['id']; ?>, 'approve')" title="Mark as Completed">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button class="approve-payment-btn" style="background-color: #dc3545;" onclick="approvePayment(<?php echo $booking['id']; ?>, 'reject')" title="Mark as Failed">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                                 <td>
                                     <button class="action-btn view-btn" onclick="toggleReservationDetails(<?php echo $booking['id']; ?>)">
@@ -472,6 +616,22 @@ $result = $conn->query($query);
     </div>
 
     <script>
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease-out';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                    notification.style.animation = 'slideIn 0.5s ease-out';
+                }, 500);
+            }, 3000);
+        }
+
         function toggleReservationDetails(reservationId) {
             const detailsDiv = document.getElementById(`reservation-details-${reservationId}`);
             detailsDiv.classList.toggle('active');
@@ -494,9 +654,91 @@ $result = $conn->query($query);
 
         function updateStatus(bookingId, status) {
             if (confirm(`Are you sure you want to ${status} this booking?`)) {
-                // Here you would typically make an AJAX call to update the status
-                // For now, we'll just reload the page
-                window.location.href = `update_booking_status.php?id=${bookingId}&status=${status}`;
+                // Create form data
+                const formData = new FormData();
+                formData.append('id', bookingId);
+                formData.append('status', status);
+
+                // Send AJAX request
+                fetch('update_booking_status.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        // Reload the page after a short delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('An error occurred while updating the status', 'error');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function approvePayment(bookingId, action) {
+            const actionText = action === 'approve' ? 'approve' : 'reject';
+            if (confirm(`Are you sure you want to ${actionText} this payment?`)) {
+                // Create form data
+                const formData = new FormData();
+                formData.append('id', bookingId);
+                formData.append('action', action);
+
+                // Send AJAX request
+                fetch('update_payment_status.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        
+                        // Find the payment actions container and hide it
+                        const paymentActions = document.querySelector(`button[onclick="approvePayment(${bookingId}, 'approve')"]`).closest('.payment-actions');
+                        if (paymentActions) {
+                            paymentActions.style.display = 'none';
+                        }
+
+                        // Update the payment status display
+                        const statusContainer = paymentActions.closest('.payment-status-container');
+                        const statusBadge = statusContainer.querySelector('.status-badge');
+                        const statusInfo = statusContainer.querySelector('.payment-status-info');
+                        
+                        if (action === 'approve') {
+                            statusBadge.className = 'status-badge status-paid';
+                            statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Payment Completed';
+                            
+                            // Add payment date
+                            const dateSpan = document.createElement('span');
+                            dateSpan.className = 'payment-status-date';
+                            dateSpan.textContent = `Paid on: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                            statusInfo.appendChild(dateSpan);
+                        } else {
+                            statusBadge.className = 'status-badge status-refunded';
+                            statusBadge.innerHTML = '<i class="fas fa-times-circle"></i> Payment Failed';
+                            
+                            // Add failed date
+                            const dateSpan = document.createElement('span');
+                            dateSpan.className = 'payment-status-date';
+                            dateSpan.textContent = `Failed on: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                            statusInfo.appendChild(dateSpan);
+                        }
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {   
+                    showNotification('An error occurred while processing the payment', 'error');
+                    console.error('Error:', error);
+                });
             }
         }
 
