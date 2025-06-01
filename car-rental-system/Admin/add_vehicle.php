@@ -8,6 +8,73 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
+// Check if GD library is available
+if (!extension_loaded('gd')) {
+    function optimizeImage($source_path, $max_width = 1200, $max_height = 1200, $quality = 80) {
+        // If GD is not available, just return the original file
+        return $source_path;
+    }
+} else {
+    // Add image optimization function
+    function optimizeImage($source_path, $max_width = 1200, $max_height = 1200, $quality = 80) {
+        list($width, $height, $type) = getimagesize($source_path);
+        
+        // Calculate new dimensions
+        if ($width > $max_width || $height > $max_height) {
+            $ratio = min($max_width / $width, $max_height / $height);
+            $new_width = round($width * $ratio);
+            $new_height = round($height * $ratio);
+        } else {
+            $new_width = $width;
+            $new_height = $height;
+        }
+
+        // Create new image
+        $new_image = imagecreatetruecolor($new_width, $new_height);
+
+        // Handle different image types
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $source = imagecreatefromjpeg($source_path);
+                break;
+            case IMAGETYPE_PNG:
+                $source = imagecreatefrompng($source_path);
+                // Preserve transparency for PNG
+                imagealphablending($new_image, false);
+                imagesavealpha($new_image, true);
+                break;
+            case IMAGETYPE_GIF:
+                $source = imagecreatefromgif($source_path);
+                break;
+            default:
+                return false;
+        }
+
+        // Resize image
+        imagecopyresampled($new_image, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+        // Save optimized image
+        $temp_path = tempnam(sys_get_temp_dir(), 'optimized_');
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                imagejpeg($new_image, $temp_path, $quality);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($new_image, $temp_path, round(9 * $quality / 100));
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($new_image, $temp_path);
+                break;
+        }
+
+        // Clean up
+        imagedestroy($source);
+        imagedestroy($new_image);
+
+        return $temp_path;
+    }
+}
+
 $message = "";
 $error = "";
 
@@ -53,8 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $new_filename = uniqid() . '.' . $file_ext;
             $upload_path = $upload_dir . $new_filename;
             
-            if (move_uploaded_file($_FILES['vehicle_image']['tmp_name'], $upload_path)) {
+            // Optimize image before saving
+            $temp_path = $_FILES['vehicle_image']['tmp_name'];
+            $optimized_path = optimizeImage($temp_path);
+            
+            if ($optimized_path && move_uploaded_file($optimized_path, $upload_path)) {
                 $image_path = $upload_path;
+                // Clean up temporary file
+                @unlink($optimized_path);
             } else {
                 throw new Exception('Failed to upload image.');
             }

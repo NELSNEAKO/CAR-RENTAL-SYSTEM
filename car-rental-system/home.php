@@ -27,6 +27,60 @@ if ($result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - QuadRide Rental</title>
     <link rel="stylesheet" href="home.css">
+    <style>
+        .search-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        #searchInput:focus {
+            border-color:rgb(85, 94, 92);
+            box-shadow: 0 2px 8px rgba(26,188,156,0.2);
+        }
+
+        #searchInput::placeholder {
+            color: #999;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 30px 0;
+            color: #333;
+        }
+
+        .section-title h1 {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: #1abc9c;
+        }
+    </style>
 </head>
 <body>
     <header class="navbar">
@@ -37,10 +91,8 @@ if ($result) {
 
         <nav class="nav-links">
             <a href="home.php">Home</a>
-            <a href="about.php">About Us</a>
             <a href="carlist.php">Car list</a>
             <a href="contact.php">Contact</a>
-            <a href="gallery.php">Gallery</a>
             <a href="logout.php">Log Out</a>
         </nav>
     </header>
@@ -68,13 +120,14 @@ if ($result) {
         <?php else: ?>
             <?php foreach ($vehicles as $vehicle): ?>
                 <div class="flex-box" data-search="<?php echo strtolower($vehicle['brand'] . ' ' . $vehicle['model'] . ' ' . $vehicle['category_name']); ?>">
-                    <?php if (!empty($vehicle['image_path']) && file_exists($vehicle['image_path'])): ?>
-                        <img src="<?php echo htmlspecialchars($vehicle['image_path']); ?>" 
-                             alt="<?php echo htmlspecialchars($vehicle['brand'] . ' ' . $vehicle['model']); ?>"
-                             class="car-image">
-                    <?php else: ?>
-                        <div class="no-image">No Image Available</div>
-                    <?php endif; ?>
+                    <?php 
+                    $imagePath = !empty($vehicle['image_path']) ? 'Admin/' . $vehicle['image_path'] : 'Admin/uploads/vehicles/default-car.jpg';
+                    $imagePath = str_replace('\\', '/', $imagePath); // Normalize path separators
+                    ?>
+                    <img src="<?php echo htmlspecialchars($imagePath); ?>" 
+                         alt="<?php echo htmlspecialchars($vehicle['brand'] . ' ' . $vehicle['model']); ?>"
+                         class="car-image"
+                         onerror="this.src='Admin/uploads/vehicles/default-car.jpg'">
 
                     <div class="car-info">
                         <h3><?php echo htmlspecialchars($vehicle['brand'] . ' ' . $vehicle['model']); ?></h3>
