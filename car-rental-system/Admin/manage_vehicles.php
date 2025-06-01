@@ -302,7 +302,6 @@ $result = $conn->query($query);
             <li><a href="manage_vehicles.php" class="active">Manage Vehicles</a></li>
             <li><a href="customers.php">View Customers</a></li>
             <li><a href="view_reservations.php">Manage Reservations</a></li>
-            <li><a href="reports.php">Reports & Analytics</a></li>
         </ul>
 
         <a href="../logout.php" class="logout-btn">Logout</a>
