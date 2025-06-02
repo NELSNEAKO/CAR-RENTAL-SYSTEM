@@ -63,23 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <header class="navbar">
-        <div class="brand">
-            <img src="carlogo2.png" alt="Car Logo" class="logo">
-            <a href="index.php" style="text-decoration: none; color: inherit;">
-                <span class="brand-text">QuadRide<span class="highlight">Rental</span></span>
-            </a>
-        </div>
-
-        <nav class="nav-links">
-            <a href="about.php">About Us</a>
-            <a href="carlist.php">Car list</a>
-            <a href="contact.php">Contact</a>
-            <a href="gallery.php">Gallery</a>
-            <a href="staff.php">Staff</a>
-            <a href="admin.php">Admin</a>
-        </nav>
-    </header>
+    <?php include 'includes/navbar.php'; ?>
 
     <div class="login-container">
         <div class="login-card">

@@ -63,7 +63,7 @@ body {
 }
 
 .hero {
-    background-image: url('car5.png');
+    background-image: url('../images/car5.png');
     background-size: cover;
     background-position: 50% 10%;
     height: 100vh; /* fills the full viewport height */

@@ -304,7 +304,7 @@ $result = $conn->query($query);
             <li><a href="view_reservations.php">Manage Reservations</a></li>
         </ul>
 
-        <a href="../logout.php" class="logout-btn">Logout</a>
+        <a href="../php/logout.php" class="logout-btn">Logout</a>
     </div>
 
     <div class="main-content">
