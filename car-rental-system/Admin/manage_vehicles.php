@@ -2,8 +2,8 @@
 session_start();
 require_once "../php/database.php";
 
-// Check if user is logged in and is admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+// Check if user is logged in and is either admin or staff
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff')) {
     header("Location: login.php");
     exit;
 }
@@ -292,13 +292,15 @@ $result = $conn->query($query);
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>QuadRide Admin</h2>
+            <h2>QuadRide <?php echo $_SESSION['role'] === 'admin' ? 'Admin' : 'Staff'; ?></h2>
             <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></p>
         </div>
         
         <ul class="nav-menu">
-            <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="register.php">Register New User</a></li>
+            <li><a href="dashboard.php" >Dashboard</a></li>
+            <?php if ($_SESSION['role'] === 'admin'): ?>
+                <li><a href="register.php">Register New User</a></li>
+            <?php endif; ?>
             <li><a href="manage_vehicles.php" class="active">Manage Vehicles</a></li>
             <li><a href="customers.php">View Customers</a></li>
             <li><a href="view_reservations.php">Manage Reservations</a></li>

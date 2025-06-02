@@ -1,13 +1,18 @@
 <?php
 session_start();
 require_once 'php/database.php';
+require_once 'php/update_vehicle_status.php';
 
 // Fetch all vehicles with their categories and rental status
 $query = "SELECT v.*, vc.name as category_name,
           CASE 
-              WHEN b.id IS NOT NULL AND b.status = 'confirmed' 
-              AND CURDATE() BETWEEN b.start_date AND b.end_date 
-              THEN 'Rented'
+              WHEN v.status = 'maintenance' THEN 'Maintenance'
+              WHEN v.status = 'rented' AND EXISTS (
+                  SELECT 1 FROM bookings b 
+                  WHERE b.vehicle_id = v.id 
+                  AND b.status = 'confirmed'
+                  AND CURDATE() BETWEEN b.start_date AND b.end_date
+              ) THEN 'Rented'
               ELSE 'Available'
           END as rental_status
           FROM vehicles v
@@ -46,7 +51,6 @@ $result = $conn->query($query);
             <?php
             if ($result->num_rows > 0) {
                 while ($vehicle = $result->fetch_assoc()) {
-                    $is_available = $vehicle['rental_status'] == 'Available';
                     ?>
                     <div class="car-card">
                         <img src="/rental/CAR-RENTAL-SYSTEM/car-rental-system/vehicles/<?php echo htmlspecialchars($vehicle['image_path']); ?>" 
@@ -68,13 +72,16 @@ $result = $conn->query($query);
                             <div class="car-price">
                                 ₱<?php echo number_format($vehicle['daily_rate'], 2); ?> / day
                             </div>
-                            <span class="status-badge <?php echo $is_available ? 'status-available' : 'status-rented'; ?>">
+                            <span class="status-badge <?php 
+                                echo $vehicle['rental_status'] == 'Available' ? 'status-available' : 
+                                    ($vehicle['rental_status'] == 'Rented' ? 'status-rented' : 'status-maintenance'); 
+                            ?>">
                                 <?php echo $vehicle['rental_status']; ?>
                             </span>
-                            <?php if ($is_available): ?>
+                            <?php if ($vehicle['rental_status'] == 'Available'): ?>
                                 <a href="book.php?id=<?php echo $vehicle['id']; ?>" class="book-btn">Book Now</a>
                             <?php else: ?>
-                                <span class="book-btn disabled">Currently Rented</span>
+                                <span class="book-btn disabled"><?php echo $vehicle['rental_status']; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>

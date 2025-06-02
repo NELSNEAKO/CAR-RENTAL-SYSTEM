@@ -38,13 +38,16 @@ $result = $conn->query($query);
 
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>QuadRide Admin</h2>
+            <h2>QuadRide <?php echo $_SESSION['role'] === 'admin' ? 'Admin' : 'Staff'; ?></h2>
             <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></p>
         </div>
         
         <ul class="nav-menu">
-            <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="register.php">Register New User</a></li>
+        <li><a href="dashboard.php" >Dashboard</a></li>
+
+            <?php if ($_SESSION['role'] === 'admin'): ?>
+                <li><a href="register.php">Register New User</a></li>
+            <?php endif; ?>
             <li><a href="manage_vehicles.php">Manage Vehicles</a></li>
             <li><a href="customers.php">View Customers</a></li>
             <li><a href="view_reservations.php" class="active">Manage Reservations</a></li>

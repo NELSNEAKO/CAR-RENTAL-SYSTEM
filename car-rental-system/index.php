@@ -18,10 +18,7 @@
         <nav class="nav-links">
             <a href="about.php">About Us</a>
             <a href="carlist.php">Car list</a>
-            <a href="contact.php">Contact</a>
-            <a href="gallery.php">Gallery</a>
-            <a href="staff.php">Staff</a>
-            <a href="Admin/login.php">Admin</a>
+            <a href="Admin/login.php">Staff</a>
         </nav>
     </header>
 

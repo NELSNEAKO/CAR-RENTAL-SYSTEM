@@ -14,10 +14,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <a href="index.php" <?php echo ($current_page == 'index.php') ? 'class="active"' : ''; ?>>Home</a>
             <a href="about.php" <?php echo ($current_page == 'about.php') ? 'class="active"' : ''; ?>>About Us</a>
             <a href="carlist.php" <?php echo ($current_page == 'carlist.php') ? 'class="active"' : ''; ?>>Car List</a>
-            <a href="contact.php" <?php echo ($current_page == 'contact.php') ? 'class="active"' : ''; ?>>Contact</a>
-            <a href="gallery.php" <?php echo ($current_page == 'gallery.php') ? 'class="active"' : ''; ?>>Gallery</a>
-            <a href="staff.php" <?php echo ($current_page == 'staff.php') ? 'class="active"' : ''; ?>>Staff</a>
-            <a href="Admin/login.php" class="admin-link">Admin</a>
+
         </nav>
     </header>
 

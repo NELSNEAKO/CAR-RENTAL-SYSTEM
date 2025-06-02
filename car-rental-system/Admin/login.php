@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Please fill in all fields.";
     } else {
         try {
-            $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND role = 'admin'");
+            $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND (role = 'admin' OR role = 'staff')");
             $stmt->bind_param("s", $username);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -25,19 +25,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
-                    $_SESSION['is_admin'] = true;
                     
+                    // Redirect to dashboard for both admin and staff
                     header("Location: dashboard.php");
-                    exit();
+                    exit;
                 } else {
                     $error = "Invalid password.";
                 }
             } else {
-                $error = "Invalid username or not an admin account.";
+                $error = "Invalid username or not an authorized account.";
             }
         } catch (Exception $e) {
             $error = "Login failed. Please try again later.";
-            error_log("Admin login error: " . $e->getMessage());
+            error_log("Login error: " . $e->getMessage());
         }
     }
 }
@@ -49,13 +49,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="login.css">
-    <title>Admin Login - QuadRide Rental</title>
+    <title>Staff/Admin Login - QuadRide Rental</title>
 </head>
 <body>
     <div class="login-container">
         <div class="login-card">
             <h1 class="login-logo">QuadRide Rental</h1>
-            <h2>Admin Login</h2>
+            <h2>Staff/Admin Login</h2>
 
             <?php if ($error): ?>
                 <div class="error-message">
@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit">Login</button>
             </form>
 
-            <a href="../index.php" class="back-link">Back to Main Site</a>
+            <a href="../home.php" class="back-link">Back to Main Site</a>
         </div>
     </div>
 </body>

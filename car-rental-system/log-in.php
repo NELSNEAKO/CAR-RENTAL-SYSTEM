@@ -14,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (empty($email) || empty($password)) {
             $error = "Please fill in all fields.";
         } else {
+            // Password validation
+            $password_errors = [];
+            
             try {
                 // Check if user exists
                 $stmt = $conn->prepare("SELECT id, password, role, first_name, last_name FROM users WHERE email = ?");
@@ -38,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         }
                         exit();
                     } else {
-                        $error = "Invalid password.";
+                        $error = "Wrong password. Please try again.";
                     }
                 } else {
                     $error = "No account found with this email.";
@@ -60,6 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Login - QuadRide Rental</title>
     <link rel="stylesheet" href="login.css">
+    <style>
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #ef9a9a;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -70,18 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h1 class="login-logo">QuadRide Rental</h1>
             <h2>Login your account</h2>
 
-            <!-- <?php if ($error): ?>
-                <div class="error-box">
-                    <?php if (strpos($error, "email") !== false): ?>
-                        <input class="input-error" type="email" placeholder="Email" disabled>
-                    <?php else: ?>
-                        <input class="input-error" type="password" placeholder="Password" disabled>
-                    <?php endif; ?>
-                    <p class="error-message">
-                        <?= htmlspecialchars($error) ?>
-                    </p>
+            <?php if (!empty($error)): ?>
+                <div class="error-message">
+                    <?php echo htmlspecialchars($error); ?>
                 </div>
-            <?php endif; ?> -->
+            <?php endif; ?>
 
             <form method="post">
                 <input type="email" name="email" placeholder="Email Address" required 

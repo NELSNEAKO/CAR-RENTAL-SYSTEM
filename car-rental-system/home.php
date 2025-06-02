@@ -1,13 +1,24 @@
 <?php
 session_start();
 require_once 'php/database.php';
+require_once 'php/update_vehicle_status.php';
 
 // Fetch all available vehicles with their categories
 $query = "
     SELECT v.*, vc.name as category_name 
     FROM vehicles v 
     LEFT JOIN vehicle_categories vc ON v.category_id = vc.id
-    WHERE v.status = 'available'
+    LEFT JOIN bookings b ON v.id = b.vehicle_id 
+    AND b.status = 'confirmed'
+    AND CURDATE() BETWEEN b.start_date AND b.end_date
+    WHERE (v.status = 'available' OR 
+           (v.status = 'rented' AND NOT EXISTS (
+               SELECT 1 FROM bookings b2 
+               WHERE b2.vehicle_id = v.id 
+               AND b2.status = 'confirmed'
+               AND CURDATE() BETWEEN b2.start_date AND b2.end_date
+           )))
+    GROUP BY v.id
     ORDER BY v.created_at DESC
 ";
 
@@ -28,60 +39,7 @@ if ($result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - QuadRide Rental</title>
     <link rel="stylesheet" href="home.css">
-    <style>
-        .search-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            text-align: center;
-        }
 
-        #searchInput {
-            width: 100%;
-            padding: 15px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 30px;
-            outline: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        #searchInput:focus {
-            border-color:rgb(85, 94, 92);
-            box-shadow: 0 2px 8px rgba(26,188,156,0.2);
-        }
-
-        #searchInput::placeholder {
-            color: #999;
-        }
-
-        .section-title {
-            text-align: center;
-            margin: 30px 0;
-            color: #333;
-        }
-
-        .section-title h1 {
-            font-size: 28px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .section-title h1:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: #1abc9c;
-        }
-    </style>
 </head>
 <body>
     <header class="navbar">
@@ -95,9 +53,9 @@ if ($result) {
             <a href="carlist.php">Car list</a>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="my_rentals.php">My Rentals</a>
-                <a href="logout.php">Log Out</a>
+                <a href="php/logout.php">Log Out</a>
             <?php else: ?>
-                <a href="login.php">Login</a>
+                <a href="log-in.php">Login</a>
                 <a href="register.php">Register</a>
             <?php endif; ?>
         </nav>
